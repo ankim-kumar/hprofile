@@ -1,0 +1,8 @@
+name: workflownameH
+on: workflow_dispatch
+jobs:
+  Testing:
+    run-on: ubuntu-latest
+    steps:
+      - name: Testing workflow
+        run: echo "Workflow working status!"
