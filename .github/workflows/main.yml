@@ -49,7 +49,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_URL: ${{ secrets.SONAR_URL }} #OPTIONAL
-
         # Build job for creating the image 
         BUILD_AND_PUBLISH:
           needs: Testing
