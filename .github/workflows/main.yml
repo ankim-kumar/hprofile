@@ -1,5 +1,7 @@
 name: workflownameH
 on: workflow_dispatch
+env:
+  AWS_REGION: us-east-1
 jobs:
   Testing:
     runs-on: ubuntu-latest
@@ -47,3 +49,31 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_URL: ${{ secrets.SONAR_URL }} #OPTIONAL
+
+        # Build job for creating the image 
+        BUILD_AND_PUBLISH:
+          run-on: ubuntu-latest
+          steps:
+            - name: Code checkout
+              uses: actions/checkout@v4
+
+        # Search for values in application property and replace it values that we store it in secret the RDS values.
+            - name: Update application.properties file # To run the sed command to replace the actual RDS database name.
+              run: |
+                sed -i "s/^jdbc.username.*$/jdbc.username\=${{ secrets.RDS_USER }}/" src/main/resources/application.properties   
+                sed -i "s/^jdbc.password.*$/jdbc.password\=${{ secrets.RDS_PASS }}/" src/main/resources/application.properties
+                sed -i "s/db01/${{ secrets.RDS_ENDPOINT }}/" src/main/resources/application.properties
+
+            - name: upload image to ECR
+              uses: appleboy/docker-ecr-action@master
+              with:
+    access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    registry: ${{ secrets.REGISTRY }}
+    repo: actapp
+    region: ${{ env.AWS_REGION }}
+    tags: latest,${{github.run_number }}
+    auto_tag: true
+    daemon_off: false
+    dockerfile: ./Dockerfile
+    context: ./
