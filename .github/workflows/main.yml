@@ -52,6 +52,7 @@ jobs:
 
         # Build job for creating the image 
         BUILD_AND_PUBLISH:
+          needs: Testing
           run-on: ubuntu-latest
           steps:
             - name: Code checkout
