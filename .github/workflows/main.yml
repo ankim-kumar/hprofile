@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Code checkout
-        uses: actions/checkout@v4     #Tools from Github marketplace. to clone from repository
+        uses: actions/checkout@v4     ##Tools from Github marketplace. to clone from repository
 
       - name: Maven test  # Ubuntu runner has already maven is perbuild and run the Maven
         run: mvn test
